@@ -1,32 +1,130 @@
-# Spring Boot Bug-Fixing Lab
+# Spring Boot Bug Fixing Lab
 
-A deliberately flawed, realistic order-management REST API for practicing bug fixing, exception handling, validation, JPA, and automated tests.
+A Java Spring Boot REST API project demonstrating order management, request validation, exception handling, database persistence, and automated testing.
 
-## Requirements
-- Java 17+
-- Maven 3.9+ (or add Maven Wrapper)
-- Internet access on first build to download dependencies
+## Overview
 
-This starter uses an in-memory H2 database so you can start without installing MySQL. Data resets when the app stops.
+This project provides a backend API for creating and managing customer orders. It is designed as a practical learning and portfolio project focused on building reliable REST APIs and testing Spring Boot applications.
 
-## Run
-```bash
-mvn spring-boot:run
+## Features
+
+- REST API for order management
+- Request validation for order input
+- Service-layer business logic
+- Persistence using Spring Data JPA and Hibernate
+- H2 in-memory database for local development
+- Centralized exception handling
+- Automated service, repository, and API integration tests
+
+## Technology Stack
+
+- **Language:** Java
+- **Framework:** Spring Boot
+- **Database:** H2 in-memory database
+- **Persistence:** Spring Data JPA and Hibernate
+- **Build tool:** Maven
+- **Testing:** JUnit and Spring Boot testing tools
+
+## Project Structure
+
+```text
+src/
+├── main/
+│   ├── java/com/practice/buglab/
+│   │   ├── controller/
+│   │   │   └── OrderController.java
+│   │   ├── dto/
+│   │   │   └── CreateOrderRequest.java
+│   │   ├── exception/
+│   │   │   └── GlobalExceptionHandler.java
+│   │   ├── model/
+│   │   │   ├── CustomerOrder.java
+│   │   │   └── OrderStatus.java
+│   │   ├── repository/
+│   │   │   └── OrderRepository.java
+│   │   ├── service/
+│   │   │   └── OrderService.java
+│   │   └── BugFixingLabApplication.java
+│   └── resources/
+│       └── application.yml
+└── test/java/com/practice/buglab/
+    ├── OrderApiIntegrationTest.java
+    ├── OrderRepositoryTest.java
+    └── OrderServiceTest.java
 ```
 
-Run tests (they are expected to fail until you fix the bugs):
+## Prerequisites
+
+Install the following before running the application:
+
+- Java version compatible with the project configuration in `pom.xml`
+- Apache Maven, or the Maven Wrapper if included in the repository
+- Git (optional, for cloning the repository)
+
+## Getting Started
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/MukhtarAlamMd/spring-boot-bug-fixing-lab.git
+cd spring-boot-bug-fixing-lab
+```
+
+### 2. Run the tests
+
+If Maven is installed:
+
 ```bash
 mvn test
 ```
 
-## Endpoints
-- `POST /api/orders` — create order
-- `GET /api/orders/{id}` — get one order
-- `GET /api/orders?email=buyer@example.com` — list by customer email
-- `PATCH /api/orders/{id}/cancel` — cancel order
-- `PATCH /api/orders/{id}/ship` — mark order shipped
+If the repository includes the Maven Wrapper, use the appropriate command for your operating system.
 
-Example request:
+Windows PowerShell:
+
+```powershell
+.\mvnw.cmd test
+```
+
+### 3. Start the application
+
+With Maven installed:
+
+```bash
+mvn spring-boot:run
+```
+
+Or, if the Maven Wrapper is available on Windows:
+
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+The application is configured to run locally on port `8080`, unless overridden by configuration.
+
+## API Documentation
+
+The API is implemented in `OrderController.java`. Review that class for the exact routes, request formats, and response structures.
+
+The following are common REST operations to document once verified against the controller:
+
+| Operation | Purpose |
+|---|---|
+| Create order | Submit a new order |
+| Get order | Retrieve an order by ID |
+| List orders | Retrieve orders |
+| Update order | Only if implemented |
+| Delete order | Only if implemented |
+
+### Example request
+
+The exact fields depend on `CreateOrderRequest.java`. A typical order-creation request may look like this:
+
+```http
+POST /api/orders
+Content-Type: application/json
+```
+
 ```json
 {
   "customerEmail": "buyer@example.com",
@@ -36,48 +134,30 @@ Example request:
 }
 ```
 
-## Your role: the hired bug-fixing developer
+Example values are illustrative. Confirm the required fields and validation rules in the source code before using this request.
 
-Do not try to fix everything at once. Follow a professional workflow:
-1. Run `mvn test` and record the failures.
-2. Reproduce one bug with an API request.
-3. Identify the root cause before editing code.
-4. Add a regression test.
-5. Fix the smallest appropriate part of the code.
-6. Run tests again.
-7. Record the root cause, code change, and verification in `BUG_FIX_REPORT.md`.
+## Testing
 
-## Bug tickets (10)
-1. Request accepts missing/invalid email and blank product name.
-2. Request accepts zero/negative quantity and negative price.
-3. `createdAt` is null after creation.
-4. A nonexistent order does not produce HTTP 404.
-5. Cancelling a nonexistent order causes an uncontrolled null dereference.
-6. A cancelled order can be shipped; invalid status transitions are allowed.
-7. Create endpoint returns HTTP 200 instead of HTTP 201.
-8. Request validation is not activated with `@Valid`.
-9. Global exception handler returns HTTP 200 for failures.
-10. Error response exposes raw exception details and has no stable format.
+The project includes three test classes:
 
-Additional practice:
-- Normalize email addresses consistently.
-- Add tests for malformed JSON, missing query parameters, and unsupported status transitions.
-- Add pagination for list endpoints.
-- Add service-layer unit tests using Mockito.
-- Do not catch `Exception` indiscriminately; map expected errors to meaningful status codes.
+- `OrderApiIntegrationTest` — API integration testing
+- `OrderRepositoryTest` — repository and persistence testing
+- `OrderServiceTest` — service-layer testing
 
-## Suggested response contract
-Success: normal order JSON.
-Error:
-```json
-{
-  "timestamp": "2026-01-01T12:00:00Z",
-  "status": 404,
-  "error": "Not Found",
-  "message": "Order not found: 123",
-  "path": "/api/orders/123"
-}
-```
+Run the full suite with `mvn test`. Confirm that the build succeeds before reporting test results.
 
-## Safety note
-This project is intentionally buggy and for local practice only. Do not deploy it publicly before fixing the listed issues.
+## Database
+
+The default configuration uses an H2 in-memory database for local development. Data is not intended to persist across application restarts.
+
+## Current Scope and Limitations
+
+This is a portfolio and learning project. The default H2 configuration is intended for development and testing, not production deployment. Production use would require environment-specific configuration, appropriate security controls, and further operational testing.
+
+## Author
+
+**GitHub:** [MukhtarAlamMd](https://github.com/MukhtarAlamMd)
+
+## License
+
+No license has been specified yet. Contact the repository owner before reusing this project or its code.
