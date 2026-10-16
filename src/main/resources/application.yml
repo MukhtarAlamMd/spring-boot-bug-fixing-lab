@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: bug-fixing-lab
+  datasource:
+    url: jdbc:h2:mem:buglab;DB_CLOSE_DELAY=-1;MODE=MySQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: false
+  h2:
+    console:
+      enabled: true
+server:
+  error:
+    include-message: always
