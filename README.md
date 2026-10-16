@@ -52,6 +52,86 @@ src/
     ├── OrderRepositoryTest.java
     └── OrderServiceTest.java
 ```
+## API Documentation
+
+Base URL: `http://localhost:8080`
+
+### Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/orders` | Create a new order |
+| `GET` | `/api/orders` | Retrieve all orders |
+| `GET` | `/api/orders/{id}` | Retrieve an order by ID |
+| `GET` | `/api/orders?email={email}` | Filter orders by customer email |
+| `PATCH` | `/api/orders/{id}/cancel` | Cancel an order |
+| `PATCH` | `/api/orders/{id}/ship` | Mark an order as shipped |
+
+### 1. Create an order
+
+**Request**
+
+```http
+POST /api/orders
+Content-Type: application/json
+```
+
+```json
+{
+  "customerEmail": "buyer@example.com",
+  "productName": "USB-C Cable",
+  "quantity": 2,
+  "unitPrice": 9.99
+}
+```
+
+**Expected result:** `201 Created`, with the created order returned as JSON. The response includes fields such as the order ID and status, depending on the application configuration and model.
+
+### 2. Get all orders
+
+```http
+GET /api/orders
+```
+
+Returns the list of orders.
+
+### 3. Get an order by ID
+
+```http
+GET /api/orders/1
+```
+
+Returns the order with ID `1`. If the order doesn't exist, the API's exception handling returns an error response.
+
+### 4. Filter orders by customer email
+
+```http
+GET /api/orders?email=buyer%40example.com
+```
+
+Returns orders matching the supplied customer email. URL-encode special characters where necessary.
+
+### 5. Cancel an order
+
+```http
+PATCH /api/orders/1/cancel
+```
+
+Requests cancellation of order `1`, subject to the service's business rules.
+
+### 6. Mark an order as shipped
+
+```http
+PATCH /api/orders/1/ship
+```
+
+Requests that order `1` be marked as shipped, subject to the service's business rules.
+
+### Validation and Error Handling
+
+The create-order endpoint uses Jakarta Bean Validation through `@Valid`. Invalid requests may return a validation error response. The application also includes a centralized exception handler.
+
+Exact error formats and allowed status transitions are determined by the service and exception-handler implementations.
 
 ## Prerequisites
 
